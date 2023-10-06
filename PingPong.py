@@ -10,7 +10,7 @@ font1 = font.Font(None, 80)
 win = font1.render('YOU WIN!', True, (255, 255, 255))
 lose = font1.render('YOU LOSE!', True, (180, 0, 0))
 
-
+clock = time.Clock()
 font2 = font.Font(None, 36)
 
 
@@ -75,22 +75,28 @@ window = display.set_mode((width,height))
 background = transform.scale(image.load('фон.jpg'), (width, height))
 racket1 = Player('ракетка.jpg',30,200,4,50,150)
 racket2 = Player('ракетка.jpg',520,200,4,50,150)
-ball = GameSprite('Мячик.jpg',200,200,400,50,50)
+ball = GameSprite('Мячик.jpg',200,200,4,50,50)
 
 
 font.init()
 font = font.Font(None,35)
 lose1 = font.render('PLAYER 1 LOSE!',True,(180,0,0))
 lose2 = font.render('PLAYER 2 LOSE!',True,(180,0,0))
+time = font.render('Время:',True,(255,255,255))
+count = font.render('Счёт:',True,(255,255,255))
+count1 = font.render('Счёт:',True,(255,255,255))
+win1 = font.render('PLAYER 1 WIN!',True,(0,180,0))
+win2 = font.render('PLAYER 2 WIN!',True,(0,180,0))
 
 speed_x = 3
-speed_y = 3 
+speed_y = 3
 
 game = True 
 finish = False
-clock = time.Clock()
 
 
+score = 0
+score1 = 0
 
 FPS = 60
 while game:
@@ -99,14 +105,33 @@ while game:
             game = False
     if finish == False:
         window.blit(background,(0,0))
-            
+        window.blit(count,(100,50))
+        window.blit(count1,(430,50))
         racket1.update_l()
         racket1.reset()
         racket2.update_r()
         racket2.reset()
-        ball.rect.x += speed_x
         ball.rect.y += speed_y
+        ball.rect.x += speed_x
+        
         ball.reset()
+
+        count = font.render('Счёт: ' + str(score),1,(255,255,255))
+        count1 = font.render('Счёт: ' + str(score1),1,(255,255,255))
+        if sprite.collide_rect(racket1,ball):
+
+            
+            score+=1
+        if sprite.collide_rect(racket2,ball):
+            
+            score1+=1
+        if score == 10:
+            finish = True
+            window.blit(win1,(200,200))
+        if score1 == 10:
+            score1+=1
+            window.blit(win2,(200,200))
+            finish = True
 
         if sprite.collide_rect(racket1,ball) or sprite.collide_rect(racket2,ball):
             speed_x *= -1
